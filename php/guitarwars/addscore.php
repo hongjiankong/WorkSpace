@@ -49,7 +49,7 @@
             $score = "";
             $screenshot = "";
 
-            mysqli_close($dbc);
+           $result= mysqli_close($dbc);
           }
           else {
             echo '<p class="error">Sorry, there was a problem uploading your screen shot image.</p>';
