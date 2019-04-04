@@ -17,9 +17,12 @@
 
   if (isset($_POST['submit'])) {
     // Grab the score data from the POST
-    $name = $_POST['name'];
-    $score = $_POST['score'];
-    $screenshot = $_FILES['screenshot']['name'];
+    $name = trim($_POST['name']);
+    $name =mysqli_escape_string($dbc, trim($_POST['name']));
+
+
+    $score = trim($_POST['score']);
+    $screenshot = trim($_FILES['screenshot']['name']);
     $screenshot_type = $_FILES['screenshot']['type'];
     $screenshot_size = $_FILES['screenshot']['size']; 
 
@@ -34,7 +37,7 @@
             $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 
             // Write the data to the database
-            $query = "INSERT INTO guitarwars VALUES (0, NOW(), '$name', '$score', '$screenshot')";
+            $query = "INSERT INTO guitarwars VALUES (0, NOW(), '$name', '$score', '$screenshot',0)";
             mysqli_query($dbc, $query);
 
             // Confirm success with the user
@@ -60,7 +63,7 @@
         echo '<p class="error">The screen shot must be a GIF, JPEG, or PNG image file no greater than ' . (GW_MAXFILESIZE / 1024) . ' KB in size.</p>';
       }
       // Try to delete the temporary screen shot image file
-      @unlink($_FILES['screenshot']['tmp_name']);
+      //@unlink($_FILES['screenshot']['tmp_name']);
     }
     else {
       echo '<p class="error">Please enter all of the information to add your high score.</p>';
