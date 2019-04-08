@@ -17,27 +17,28 @@
 
   if (isset($_POST['submit'])) {
     // Grab the score data from the POST
-    $name = trim($_POST['name']);
-    $name =mysqli_escape_string($dbc, trim($_POST['name']));
 
-
+    $name =trim($_POST['name']);
     $score = trim($_POST['score']);
     $screenshot = trim($_FILES['screenshot']['name']);
     $screenshot_type = $_FILES['screenshot']['type'];
     $screenshot_size = $_FILES['screenshot']['size']; 
-
-    if (!empty($name) && !empty($score) && !empty($screenshot)) {
+    
+    if (!empty($name) && !empty($score) && is_numeric($score)&& !empty($screenshot)) {
       if ((($screenshot_type == 'image/gif') || ($screenshot_type == 'image/jpeg') || ($screenshot_type == 'image/pjpeg') || ($screenshot_type == 'image/png'))
-        && ($screenshot_size > 0) && ($screenshot_size <= GW_MAXFILESIZE)) {
+      && ($screenshot_size > 0) && ($screenshot_size <= GW_MAXFILESIZE)) {
         if ($_FILES['screenshot']['error'] == 0) {
           // Move the file to the target upload folder
           $target = GW_UPLOADPATH . $screenshot;
           if (move_uploaded_file($_FILES['screenshot']['tmp_name'], $target)) {
             // Connect to the database
             $dbc = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+            $name =mysqli_escape_string($dbc, $_POST['name']);
+            $score = mysqli_escape_string($dbc,$_POST['score']);
+            $screenshot = mysqli_escape_string($dbc,$_FILES['screenshot']['name']);
 
             // Write the data to the database
-            $query = "INSERT INTO guitarwars VALUES (0, NOW(), '$name', '$score', '$screenshot',0)";
+            $query = "INSERT INTO guitarwars(date,name,score,screenshot) VALUES (NOW(), '$name', '$score', '$screenshot')";
             mysqli_query($dbc, $query);
 
             // Confirm success with the user
@@ -84,4 +85,5 @@
         <input type="submit" value="Add" name="submit" />
     </form>
 </body>
+
 </html>
