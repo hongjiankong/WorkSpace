@@ -93,6 +93,7 @@
     }
   } // End of check for form submission
   else {
+    $user_id=$_COOKIE['user_id'];
     // Grab the profile data from the database
     $query = "SELECT first_name, last_name, gender, birthdate, city, state, picture FROM mismatch_user WHERE user_id = '$user_id'";
     $data = mysqli_query($dbc, $query);
